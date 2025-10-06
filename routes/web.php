@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('index');
-});
-Route::get('/contact', function () {
-    return view('contact');
-});
+})->name('index');
+
+Route::get('/conctact', function () {
+    return view('contact'); // Assurez-vous que ce fichier de vue existe
+})->name('contact');
+Route::post('/contact', [PostController::class, 'submit'])->name('contact.submit');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -30,5 +33,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Routes publiques
+Route::get('/blog', [PostController::class, 'create'])->name('blog.index');
+Route::get('/blog/{post}', [PostController::class, 'show'])->name('blog.show');
+
+Route::get('/post', [PostController::class, 'index'])->name('admin.posts.create');
+Route::post('/post', [PostController::class, 'store'])->name('admin.posts.store');
+Route::get('/post/{post}', [PostController::class,'edit'])->name('admin.posts.edit');
+Route::put('/post/{post}', [PostController::class,'update'])->name('admin.posts.update');
+Route::get('/voir', [PostController::class, 'voir'])->name('admin.posts.voir');
+Route::delete('/admin/posts/images/{id}', [PostController::class, 'destroyImage'])->name('posts.images.destroy');
+Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('admin.posts.destroy');
+
 
 require __DIR__.'/auth.php';
